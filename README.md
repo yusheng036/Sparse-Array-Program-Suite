@@ -1,1 +1,1 @@
-# Sparse Array Program Suite (SAPS)
+# Sparse Tensor Stats Suite

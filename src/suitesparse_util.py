@@ -65,7 +65,7 @@ def regions_list(J: int) -> list[int]:
     cand = [1, 2, 4, 8, 16, 32, 64, 128]
     return [r for r in cand if r <= J] or [1]
 
-def structural_nnz_matmul(A: sparse.spmatrix, B: sparse.spmatrix) -> int:
+def ground_truth(A: sparse.spmatrix, B: sparse.spmatrix) -> int:
     A2, B2 = A.copy(), B.copy()
     if A2.nnz:
         A2.data[:] = 1
@@ -84,8 +84,3 @@ def rand_csr(m, n, density, seed) -> sparse.csr_matrix:
         random_state=rng,
         data_rvs=lambda k: np.ones(k, dtype=np.int8),
     )
-
-def make_batches(Bsz, I, J, K, density, seed=0):
-    A_batch = [rand_csr(I, J, density, seed + 10*b) for b in range(Bsz)]
-    B_batch = [rand_csr(J, K, density, seed + 10*b + 1) for b in range(Bsz)]
-    return A_batch, B_batch

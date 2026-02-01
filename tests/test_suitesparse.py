@@ -5,8 +5,8 @@ import numpy as np
 
 from src.lrb import lrb_matmul_stats, lrb_3d_matmul_stats
 from src.suitesparse_util import (
+    ground_truth,
     load_suitesparse_matrix,
-    structural_nnz_matmul,
     regions_list,
 )
 
@@ -65,7 +65,7 @@ SUITESPARSE = [
 ]
 
 @pytest.mark.parametrize("group,name", SUITESPARSE)
-def test_lrb_on_suitesparse(group: str, name: str):
+def test_lrb_on_suitesparse(group, name):
     M = load_suitesparse_matrix(group, name)
 
     A = M.tocsr()
@@ -74,7 +74,7 @@ def test_lrb_on_suitesparse(group: str, name: str):
     I, J = A.shape
     assert B.shape == (J, I)
 
-    true_nnz = structural_nnz_matmul(A, B)
+    true_nnz = ground_truth(A, B)
 
     for regions in regions_list(J):
         bound = lrb_matmul_stats(A, B, regions=regions)
@@ -86,8 +86,8 @@ def test_lrb_on_suitesparse(group: str, name: str):
             f"LRB exceeded dense cap for {group}/{name}: bound={bound} cap={dense_cap} regions={regions}"
         )
 
-@pytest.mark.parametrize("group,name", SUITESPARSE[:6])
-def test_lrb_3d_suitesparse(group: str, name: str):
+@pytest.mark.parametrize("group,name", SUITESPARSE)
+def test_lrb_3d_suitesparse(group, name):
     M = load_suitesparse_matrix(group, name)
 
     A = M.tocsr()
@@ -98,7 +98,7 @@ def test_lrb_3d_suitesparse(group: str, name: str):
 
     a = np.diff(A.tocsc().indptr)
     b = np.diff(B.tocsr().indptr)
-    true_nnz = int((a * b).sum())
+    true_nnz = (a * b).sum()
 
     for R in regions_list(J):
         bound = lrb_3d_matmul_stats(A, B, regions=R)

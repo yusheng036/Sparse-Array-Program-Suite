@@ -13,7 +13,7 @@ dev = ["pytest"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-py-modules = ["lrb"]
+py-modules = ["lrb", "suitesparse_util"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

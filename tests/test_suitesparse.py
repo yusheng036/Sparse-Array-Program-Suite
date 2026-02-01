@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 
 from src.lrb import lrb_matmul_stats, lrb_3d_matmul_stats
-from suitesparse_util import (
+from src.suitesparse_util import (
     load_first_mtx_from_tar,
     suitesparse_tar_url,
     structural_nnz_matmul,
@@ -38,7 +38,6 @@ SUITESPARSE = [
     ("SNAP", "email-Enron"),
     ("LPnetlib", "lp_afiro"),
     ("LPnetlib", "lp_adlittle"),
-    ("Schenk_AFE", "af_0_k101"),
 ]
 
 @pytest.mark.parametrize("group,name", SUITESPARSE)

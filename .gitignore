@@ -21,3 +21,6 @@ build/
 dist/
 *.egg-info/
 EOF
+
+# Dataset / SuiteSparse cache
+.cache/

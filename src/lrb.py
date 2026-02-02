@@ -51,9 +51,7 @@ def nnz_to_regions(axis: str, nnz: np.ndarray, regions: int) -> RegionNNZ:
     )
 
 
-def lrb_matmul_stats(
-    A: sparse.spmatrix, B: sparse.spmatrix, *, regions: int
-) -> float:
+def lrb_matmul_stats(A: sparse.spmatrix, B: sparse.spmatrix) -> float:
     """
     Localized Region Bound for 2D matmul:
 
@@ -62,8 +60,6 @@ def lrb_matmul_stats(
     Returns:
         Upper bound on nnz(C)
     """
-    if regions <= 0:
-        raise ValueError("regions must be positive")
     if A.shape[1] != B.shape[0]:
         raise ValueError(f"Incompatible shapes: A{A.shape} @ B{B.shape}")
 
@@ -72,6 +68,9 @@ def lrb_matmul_stats(
 
     A_j = np.diff(A.tocsc().indptr).astype(np.int64)
     B_j = np.diff(B.tocsr().indptr).astype(np.int64)
+
+    regions = np.count_nonzero((A_j > 0) & (B_j > 0))
+    regions = max(1, min(regions, J))
 
     regA = nnz_to_regions("j", A_j, regions)
     regB = nnz_to_regions("j", B_j, regions)
@@ -90,11 +89,7 @@ def lrb_matmul_stats(
     return min(total, I * K)
 
 
-def lrb_3d_matmul_stats(
-    A: sparse.spmatrix,
-    B: sparse.spmatrix,
-    regions: int,
-) -> dict[str, float | int]:
+def lrb_3d_matmul_stats(A: sparse.spmatrix, B: sparse.spmatrix) -> float:
     """
     Localized Region Bound for 3D matmul:
 
@@ -103,8 +98,6 @@ def lrb_3d_matmul_stats(
     Returns:
         Upper bound on nnz(C)
     """
-    if regions <= 0:
-        raise ValueError("regions must be positive")
     if A.shape[1] != B.shape[0]:
         raise ValueError(f"Incompatible shapes: A{A.shape} @ B{B.shape}")
 
@@ -113,6 +106,9 @@ def lrb_3d_matmul_stats(
 
     A_j = np.diff(A.tocsc().indptr).astype(np.int64)
     B_j = np.diff(B.tocsr().indptr).astype(np.int64)
+
+    regions = np.count_nonzero((A_j > 0) & (B_j > 0))
+    regions = max(1, min(regions, J))
 
     regA = nnz_to_regions("j", A_j, regions)
     regB = nnz_to_regions("j", B_j, regions)

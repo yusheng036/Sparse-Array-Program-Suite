@@ -24,3 +24,7 @@ EOF
 
 # Dataset / SuiteSparse cache
 .cache/
+
+# experiment outputs
+*.csv
+lrb_tightness_results.csv

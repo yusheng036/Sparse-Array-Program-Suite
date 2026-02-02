@@ -72,19 +72,13 @@ def test_lrb_on_suitesparse(group, name):
     assert B.shape == (J, I)
 
     true_nnz = ground_truth(A, B)
-
-    a = np.diff(A.tocsc().indptr)
-    b = np.diff(B.tocsr().indptr)
-    R = np.count_nonzero((a > 0) & (b > 0))
-    R = max(1, min(R, J))
-
-    bound = lrb_matmul_stats(A, B, regions=R)
+    bound = lrb_matmul_stats(A, B)
 
     assert true_nnz <= bound + 1e-9, (
-        f"LRB violated for {group}/{name}: true={true_nnz} bound={bound} R={R}"
+        f"LRB violated for {group}/{name}: true={true_nnz} bound={bound}"
     )
     assert bound <= (I * I) + 1e-9, (
-        f"LRB exceeded dense cap for {group}/{name}: bound={bound} cap={I * I} R={R}"
+        f"LRB exceeded dense cap for {group}/{name}: bound={bound} cap={I * I}"
     )
 
 @pytest.mark.parametrize("group,name", SUITESPARSE)
@@ -98,15 +92,11 @@ def test_lrb_3d_suitesparse(group, name):
     a = np.diff(A.tocsc().indptr)
     b = np.diff(B.tocsr().indptr)
     true_nnz = (a * b).sum()
-
-    R = np.count_nonzero((a > 0) & (b > 0))
-    R = max(1, min(R, J))
-
-    bound = lrb_3d_matmul_stats(A, B, regions=R)
+    bound = lrb_3d_matmul_stats(A, B)
 
     assert true_nnz <= bound + 1e-9, (
-        f"{group}/{name} 3D violated: true={true_nnz} bound={bound} R={R}"
+        f"{group}/{name} 3D violated: true={true_nnz} bound={bound}"
     )
     assert bound <= (I * J * K) + 1e-9, (
-        f"{group}/{name} 3D cap: bound={bound} cap={I * J * K} R={R}"
+        f"{group}/{name} 3D cap: bound={bound} cap={I * J * K}"
     )

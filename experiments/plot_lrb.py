@@ -18,12 +18,11 @@ def eval_one_matrix(group: str, name: str) -> dict:
 
     a = np.diff(A.tocsc().indptr).astype(np.int64)
     b = np.diff(B.tocsr().indptr).astype(np.int64)
-    true3d = (a * b).sum()
     true2d = ground_truth(A, B)
+    true3d = (a * b).sum()
 
-    R = max(1, np.count_nonzero((a > 0) & (b > 0)))
-    bound2d = lrb_matmul_stats(A, B, regions=R)
-    bound3d = lrb_3d_matmul_stats(A, B, regions=R)
+    bound2d = lrb_matmul_stats(A, B)
+    bound3d = lrb_3d_matmul_stats(A, B)
 
     return {
         "group": group,

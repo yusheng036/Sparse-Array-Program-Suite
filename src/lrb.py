@@ -51,7 +51,7 @@ def nnz_to_regions(axis: str, nnz: np.ndarray, regions: int) -> RegionNNZ:
     )
 
 
-def lrb_matmul_stats(A: sparse.spmatrix, B: sparse.spmatrix) -> float:
+def lrb_matmul_stats(A: sparse.spmatrix, B: sparse.spmatrix, regions: int) -> float:
     """
     Localized Region Bound for 2D matmul:
 
@@ -68,9 +68,6 @@ def lrb_matmul_stats(A: sparse.spmatrix, B: sparse.spmatrix) -> float:
 
     A_j = np.diff(A.tocsc().indptr).astype(np.int64)
     B_j = np.diff(B.tocsr().indptr).astype(np.int64)
-
-    regions = np.count_nonzero((A_j > 0) & (B_j > 0))
-    regions = max(1, min(regions, J))
 
     regA = nnz_to_regions("j", A_j, regions)
     regB = nnz_to_regions("j", B_j, regions)
@@ -89,7 +86,7 @@ def lrb_matmul_stats(A: sparse.spmatrix, B: sparse.spmatrix) -> float:
     return min(total, I * K)
 
 
-def lrb_3d_matmul_stats(A: sparse.spmatrix, B: sparse.spmatrix) -> float:
+def lrb_3d_matmul_stats(A: sparse.spmatrix, B: sparse.spmatrix, regions: int) -> float:
     """
     Localized Region Bound for 3D matmul:
 
@@ -106,9 +103,6 @@ def lrb_3d_matmul_stats(A: sparse.spmatrix, B: sparse.spmatrix) -> float:
 
     A_j = np.diff(A.tocsc().indptr).astype(np.int64)
     B_j = np.diff(B.tocsr().indptr).astype(np.int64)
-
-    regions = np.count_nonzero((A_j > 0) & (B_j > 0))
-    regions = max(1, min(regions, J))
 
     regA = nnz_to_regions("j", A_j, regions)
     regB = nnz_to_regions("j", B_j, regions)
